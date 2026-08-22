@@ -48,6 +48,7 @@ Output:
 }}
 '''.strip()
 
+
 USER_PROMPT = '''
 User request:
 
@@ -101,3 +102,35 @@ def get_cards_by_names(
     cards = response.json().get('cards', [])
     
     return cards
+
+def build_interaction_retrieval_query(
+        query: str,
+        cards: list[dict]
+) -> str:
+    card_texts_by_name = {}
+
+    for card in cards:
+        name = card.get('name')
+        text = card.get('text')
+
+        if not name or not text:
+            continue
+
+        if name not in card_texts_by_name:
+            card_texts_by_name[name] = text
+
+    if not card_texts_by_name:
+        return query
+    else:
+        cards_context = '\n\n'.join(
+            f'{name}: \n {text}'
+            for name, text in card_texts_by_name.items()
+        )
+
+        return f'''
+User question:
+{query}
+
+Relevant card text:
+{cards_context}
+'''.strip()
