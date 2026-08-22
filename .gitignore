@@ -21,8 +21,6 @@ htmlcov/
 .vscode/
 
 # Artefactos regenerables
-data/processed/
 data/chroma/
-data/metadata/
 *.sqlite
 *.sqlite3
