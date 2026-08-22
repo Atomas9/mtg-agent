@@ -1,0 +1,28 @@
+# Secretos y configuración local
+.env
+
+# Entornos
+.venv/
+venv/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+
+# Herramientas
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# macOS y editores
+.DS_Store
+.vscode/
+
+# Artefactos regenerables
+data/processed/
+data/chroma/
+data/metadata/
+*.sqlite
+*.sqlite3
