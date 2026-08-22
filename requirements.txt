@@ -16,8 +16,8 @@ langgraph-checkpoint-sqlite>=3.1,<4.0
 numpy==1.26.4
 torch==2.2.2; platform_system == "Darwin" and platform_machine == "x86_64"
 torch>=2.4,<3.0; platform_system != "Darwin" or platform_machine != "x86_64"
-transformers>=4.49,<5.0
-sentence-transformers>=5.6,<6.0
+transformers>=4.49
+sentence-transformers==3.4.1
 chromadb>=1.5,<2.0
 langchain-chroma>=1.1,<2.0
 
