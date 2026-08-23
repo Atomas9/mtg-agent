@@ -21,6 +21,9 @@ htmlcov/
 .vscode/
 
 # Artefactos regenerables
-data/chroma/
+data/chroma/*
+!data/chroma/.gitkeep
+data/checkpoints/*
+!data/checkpoints/.gitkeep
 *.sqlite
 *.sqlite3
