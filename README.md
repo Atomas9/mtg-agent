@@ -4,6 +4,7 @@ Demo conversacional para resolver consultas sobre **Magic: The Gathering** media
 
 Documentación adicional:
 
+- [Decisiones técnicas del MVP](decisions.md).
 - [Propuesta de evolución a producción](docs/production_solution.md).
 - [Revisión y mejora del código proporcionado](code_review.md).
 
@@ -145,7 +146,11 @@ La suite comprueba las partes deterministas principales del MVP: los chunks del 
 │   ├── index_chroma.py       # Indexación vectorial
 │   ├── main.py               # Interfaz de terminal
 │   └── pdf_parser.py         # Parseo y chunking del PDF
-├── tests/                         # Tests deterministas del MVP
+├── tests/                    # Tests deterministas del MVP
+├── docs/
+│   └── production_solution.md # Propuesta de evolución a producción
+├── decisions.md              # Decisiones técnicas del MVP
+├── code_review.md            # Revisión del código proporcionado
 └── requirements.txt
 ```
 
