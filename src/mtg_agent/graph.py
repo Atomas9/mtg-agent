@@ -132,7 +132,7 @@ def route_after_classifier(
 # ---------
 # GRAPH
 # ---------
-def create_graph(emb_model: SentenceTransformer, collection: Collection):
+def create_graph(checkpointer, emb_model: SentenceTransformer, collection: Collection):
     top_k = 10
     retrieve_rules_node_conf = partial(
         retrieve_rules_node,
@@ -172,7 +172,7 @@ def create_graph(emb_model: SentenceTransformer, collection: Collection):
             'rules': 'RetrieveRules',
             'card_search': 'ExtractCardFilters',
             'card_interaction': 'ExtractCardNames',
-            #'custom_card': 'CustomCard',
+            'custom_card': 'OutOfScope',
             'out_of_scope': 'OutOfScope'
         }
     )
@@ -186,4 +186,4 @@ def create_graph(emb_model: SentenceTransformer, collection: Collection):
     graph.add_edge('OutOfScope', END)
     #graph.add_edge('CustomCard', )
 
-    return graph.compile()
+    return graph.compile(checkpointer = checkpointer)
