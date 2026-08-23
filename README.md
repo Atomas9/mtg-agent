@@ -2,6 +2,8 @@
 
 Demo conversacional para resolver consultas sobre **Magic: The Gathering** mediante LangChain, LangGraph, Ollama, RAG y la API pública de Magic.
 
+La propuesta para evolucionar la demo se encuentra en [docs/production_solution.md](docs/production_solution.md).
+
 ## Capacidades
 
 - Responde preguntas generales sobre las reglas utilizando como referencia las *Magic Comprehensive Rules*.
