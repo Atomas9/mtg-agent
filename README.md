@@ -2,7 +2,10 @@
 
 Demo conversacional para resolver consultas sobre **Magic: The Gathering** mediante LangChain, LangGraph, Ollama, RAG y la API pública de Magic.
 
-La propuesta para evolucionar la demo se encuentra en [docs/production_solution.md](docs/production_solution.md).
+Documentación adicional:
+
+- [Propuesta de evolución a producción](docs/production_solution.md).
+- [Revisión y mejora del código proporcionado](code_review.md).
 
 ## Capacidades
 
