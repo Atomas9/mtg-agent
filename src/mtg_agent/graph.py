@@ -1,7 +1,9 @@
-from typing import TypedDict, Literal
+from typing import TypedDict, Literal, Annotated
 from chromadb import Collection
 from sentence_transformers import SentenceTransformer
 
+from mtg_agent.nodes.prepare_turn import prepare_turn
+from mtg_agent.nodes.rewrite_query import rewrite_query
 from mtg_agent.nodes.classifier import classifier
 from mtg_agent.nodes.retrieve import RetrievalResult, retrieve
 from mtg_agent.nodes.search_card import (
@@ -17,10 +19,14 @@ from mtg_agent.nodes.card_interaction import (
 )
 from mtg_agent.nodes.answer import generate_answer
 
+from langchain_core.messages import AIMessage, BaseMessage
 from langgraph.graph import END, START, StateGraph
+from langgraph.graph.message import add_messages
 from functools import partial
 
 class GraphState(TypedDict, total = False):
+    messages: Annotated[list[BaseMessage], add_messages]
+    user_query: str
     query: str
     intent: Literal[
         'rules',
@@ -32,12 +38,20 @@ class GraphState(TypedDict, total = False):
     card_filters: dict[str, object]
     card_names: dict[str, object]
     cards: list[dict]
-    retrieval: RetrievalResult
+    retrieval: RetrievalResult | None
     answer: str
 
 # ----------
 # NODES
 # ----------
+def prepare_turn_node(state: GraphState) -> dict:
+    response = prepare_turn(state['messages'])
+    return response
+
+def rewrite_query_node(state: GraphState) -> dict:
+    response = rewrite_query(state['messages'])
+    return {'query': response}
+
 def classifier_node(state: GraphState) -> dict:
     response = classifier(state['query'])
     return {'intent': response.intent}
@@ -86,16 +100,25 @@ def generate_answer_node(state: GraphState):
         retrieval = state.get('retrieval'),
         cards = state.get('cards')
     )
-    return {'answer': response}
+    return {
+        'answer': response,
+        'messages': [
+            AIMessage(content = response)
+        ]
+    }
 
 # def custom_card_node(state: GraphState)
 
 def out_of_scope_node(state: GraphState) -> dict:
+    response = (
+        'Lo siento, solo puedo responder preguntas sobre '
+        'reglas y cartas de Magic: The Gathering.'
+    )
     return {
-        'answer': (
-            'Lo siento, solo puedo responder preguntas sobre '
-            'reglas y cartas de Magic: The Gathering.'
-        )
+        'answer': response,
+        'messages': [
+            AIMessage(content = response)
+        ]
     }
 
 # ----------
@@ -126,6 +149,8 @@ def create_graph(emb_model: SentenceTransformer, collection: Collection):
 
     graph = StateGraph(GraphState)
 
+    graph.add_node('PrepareTurn', prepare_turn_node)
+    graph.add_node('RewriteQuery', rewrite_query_node)
     graph.add_node('Classifier', classifier_node)
     graph.add_node('RetrieveRules', retrieve_rules_node_conf)
     graph.add_node('ExtractCardFilters', extract_card_filters_node)
@@ -137,7 +162,9 @@ def create_graph(emb_model: SentenceTransformer, collection: Collection):
     #graph.add_node('CustomCard', custom_card_node)
     graph.add_node('OutOfScope', out_of_scope_node)
 
-    graph.add_edge(START, 'Classifier')
+    graph.add_edge(START, 'PrepareTurn')
+    graph.add_edge('PrepareTurn', 'RewriteQuery')
+    graph.add_edge('RewriteQuery', 'Classifier')
     graph.add_conditional_edges(
         'Classifier',
         route_after_classifier,
