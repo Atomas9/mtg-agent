@@ -15,7 +15,7 @@ Documentación adicional:
 - Mantiene el contexto entre turnos y convierte las preguntas de seguimiento en consultas independientes.
 - Rechaza consultas que no estén relacionadas con Magic.
 
-La creación de cartas personalizadas es un bonus y no está implementada en este MVP. Estas peticiones se redirigen a la respuesta de fuera de alcance.
+La creación de cartas personalizadas no forma parte del flujo principal del MVP. Se incluye un prototipo independiente en `nodes/custom_card.py` que demuestra cómo generar una ilustración mediante `x/z-image-turbo`, pero no está conectado al grafo. Estas peticiones se redirigen a la respuesta de fuera de alcance.
 
 ## Arquitectura
 
@@ -129,7 +129,7 @@ Busco una carta blanca, guerrero y de coste inferior a dos de maná.
 │   ├── chroma/               # Índice local, no versionado
 │   └── checkpoints/          # Memoria SQLite, no versionada
 ├── src/mtg_agent/
-│   ├── nodes/                # Nodos del flujo conversacional
+│   ├── nodes/                # Nodos del flujo y prototipo custom_card.py
 │   ├── core.py               # Carga del modelo y Chroma
 │   ├── graph.py              # Estado, rutas y grafo
 │   ├── index_chroma.py       # Indexación vectorial
@@ -149,7 +149,7 @@ Busco una carta blanca, guerrero y de coste inferior a dos de maná.
 
 ## Limitaciones y trabajo futuro
 
-- No se ha implementado el bonus de creación multimodal de cartas personalizadas.
+- El prototipo de generación de ilustraciones para cartas personalizadas no está conectado al grafo ni forma parte de la ejecución del MVP.
 - No existe todavía una suite automatizada de tests.
 - No hay reintentos, caché ni tratamiento específico de indisponibilidad para Ollama Cloud o la API de Magic.
 - Las respuestas dependen de que el modelo cloud devuelva el JSON solicitado por los nodos de extracción y clasificación.

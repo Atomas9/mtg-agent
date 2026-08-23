@@ -7,6 +7,7 @@ pymupdf>=1.27,<1.29
 # LangChain, ChatOllama y orquestacion con LangGraph
 langchain-core>=1.4.7,<2.0
 langchain-ollama>=1.1,<2.0
+ollama>=0.6,<1.0
 langgraph>=1.2,<2.0
 langgraph-checkpoint-sqlite>=3.1,<4.0
 
