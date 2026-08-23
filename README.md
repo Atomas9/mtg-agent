@@ -119,6 +119,16 @@ Busco una carta blanca, guerrero y de coste inferior a dos de maná.
 ¿Qué ocurre si Battlefield Raptor hace daño de dañar primero y lo cambio por Ninja of the Deep Hours?
 ```
 
+## Pruebas
+
+Desde la raíz del repositorio:
+
+```bash
+PYTHONPATH="$PWD/src" python -m pytest -q
+```
+
+La suite comprueba las partes deterministas principales del MVP: los chunks del reglamento, la preparación de cada turno, la construcción de consultas a la API de Magic y el enriquecimiento de las preguntas sobre interacciones. Las llamadas a Ollama y a la API externa no se ejecutan durante los tests.
+
 ## Estructura del proyecto
 
 ```text
@@ -135,6 +145,7 @@ Busco una carta blanca, guerrero y de coste inferior a dos de maná.
 │   ├── index_chroma.py       # Indexación vectorial
 │   ├── main.py               # Interfaz de terminal
 │   └── pdf_parser.py         # Parseo y chunking del PDF
+├── tests/                         # Tests deterministas del MVP
 └── requirements.txt
 ```
 
@@ -150,7 +161,7 @@ Busco una carta blanca, guerrero y de coste inferior a dos de maná.
 ## Limitaciones y trabajo futuro
 
 - El prototipo de generación de ilustraciones para cartas personalizadas no está conectado al grafo ni forma parte de la ejecución del MVP.
-- No existe todavía una suite automatizada de tests.
+- Los tests automatizados cubren las funciones deterministas principales, pero no evalúan las respuestas generadas por el modelo ni realizan pruebas end-to-end.
 - No hay reintentos, caché ni tratamiento específico de indisponibilidad para Ollama Cloud o la API de Magic.
 - Las respuestas dependen de que el modelo cloud devuelva el JSON solicitado por los nodos de extracción y clasificación.
 - La búsqueda puede devolver distintas ediciones de una misma carta; el MVP limita la respuesta, pero no elimina duplicados.

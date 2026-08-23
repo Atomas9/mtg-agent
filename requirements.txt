@@ -21,3 +21,6 @@ chromadb>=1.5,<2.0
 
 # Cliente de la API de Magic
 httpx>=0.28,<1.0
+
+# Tests
+pytest>=8.0,<10.0
