@@ -10,6 +10,13 @@ OLLAMA_MODEL = 'gemma4:31b-cloud'
 CARDS_API_URL = 'https://api.magicthegathering.io/v1/cards'
 DEFAULT_CARD_LIMIT = 5
 API_TIMEOUT = 15.0
+COLOR_CODES = {
+    'White': 'W',
+    'Blue': 'U',
+    'Black': 'B',
+    'Red': 'R',
+    'Green': 'G'
+}
 
 SYSTEM_PROMPT = '''
 You extract search filters for Magic: The Gathering cards.
@@ -83,7 +90,10 @@ def search_cards(
         params['name'] = filters.name
 
     if filters.colors:
-        params['colors'] = ','.join(filters.colors)
+        params['colors'] = ','.join(
+            COLOR_CODES[color]
+            for color in filters.colors
+        )
 
     if filters.types:
         params['types'] = ','.join(filters.types)
@@ -114,5 +124,4 @@ def search_cards(
 
     return cards[:limit]
     
-
 
