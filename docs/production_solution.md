@@ -119,13 +119,13 @@ La primera versión productiva debería incluir:
 
 Las preguntas sobre Magic no necesitan normalmente datos personales. Aun así, en un call center un usuario podría incluir nombres, teléfonos, correos u otra información sensible. La primera medida sería minimizar los datos: no recogerlos ni enviarlos al modelo cuando no sean necesarios para resolver la consulta.
 
-La forma de tratar estos datos dependería de las políticas y requisitos regulatorios del cliente. Se podrían valorar tres niveles:
+La forma de tratar estos datos dependería de las políticas y requisitos regulatorios del cliente. Se podrían valorar tres alternativas:
 
 1. **Modelo cloud con condiciones adecuadas:** comprobar con el proveedor la retención, la región de procesamiento, el uso de los datos para entrenamiento y las medidas de seguridad ofrecidas.
 2. **Anonimización local antes de utilizar el cloud:** un componente local detectaría datos sensibles y los sustituiría por referencias como `[PERSONA_1]` o `[TELEFONO_1]`. La correspondencia original se conservaría, si fuera imprescindible, dentro de la infraestructura del cliente.
 3. **Modelo completamente local:** para datos especialmente sensibles o cuando el cliente no permita enviarlos a servicios externos, tanto el procesamiento como la generación se ejecutarían en su propia infraestructura.
 
-Un modelo local ligero podría ayudar a detectar entidades sensibles, aunque también se combinaría con reglas y validaciones deterministas. El cifrado, cuando sea necesario, lo realizaría código criptográfico y no el LLM. Enviar texto totalmente cifrado a un modelo cloud impediría que este comprendiera su contenido; por eso, para mantener utilidad, normalmente se utilizaría anonimización o se optaría por un modelo local.
+La detección de datos sensibles podría combinar reglas deterministas con un modelo local ligero. Por ejemplo, una expresión regular puede identificar correos o teléfonos, mientras que el modelo podría ayudar a reconocer nombres o información menos estructurada.
 
 La decisión final se tomaría junto con los responsables de seguridad y privacidad del cliente, después de identificar qué datos se procesan realmente. No se añadiría una infraestructura local costosa si las conversaciones no contienen información sensible o si una alternativa cloud cumple los requisitos acordados.
 
@@ -146,7 +146,9 @@ Como mínimo se controlarían:
 - consumo del modelo, cuando el proveedor facilite ese dato;
 - valoración positiva o negativa del agente del call center.
 
-Las alertas iniciales se limitarían a problemas accionables: aumento de errores, dependencia externa no disponible o latencia anormal. Se podrían utilizar logs centralizados, un servicio de errores y métricas compatibles con OpenTelemetry. La herramienta concreta dependería de la plataforma que ya utilice el cliente.
+Las alertas iniciales se limitarían a problemas sobre los que se pueda actuar, como un aumento de errores, una dependencia externa que no responde o un tiempo de respuesta anormalmente alto.
+
+Para implementar esta monitorización se podrían utilizar logs centralizados, un servicio de registro de errores y paneles con las métricas principales. La herramienta concreta dependería de la plataforma que ya utilizase el cliente.
 
 ## 9. Evaluación y tests
 
@@ -170,6 +172,8 @@ Antes de cambiar el modelo, los prompts o el reglamento, se ejecutaría el conju
 - latencia y errores.
 
 La valoración de los agentes del call center permitiría incorporar casos reales al conjunto de pruebas, después de revisar y anonimizar los datos.
+
+Como apoyo, también se podría utilizar un enfoque de *LLM as a judge*: un segundo modelo evaluaría las respuestas según criterios definidos, como claridad, relación con las fuentes recuperadas y ausencia de información inventada. Estas valoraciones no se utilizarían como única medida de calidad, ya que también pueden ser variables o contener sesgos. Antes de utilizarlas de forma automática, se compararían con un conjunto pequeño de respuestas revisadas por personas.
 
 ## 10. Despliegue, escalabilidad y fallos
 
@@ -202,7 +206,7 @@ Antes de ofrecerlo a usuarios habría que revisar moderación, propiedad intelec
 | SQLite para memoria | PostgreSQL para sesiones y mensajes |
 | Conversación nueva al arrancar | Recuperación de conversaciones autorizadas |
 | Sin autenticación | Identidad y permisos del cliente |
-| Pruebas manuales | Tests y evaluación de regresión |
+| Tests deterministas básicos | Tests unitarios, de integración y evaluación de regresión |
 | Salida por terminal | Logs, métricas, alertas y feedback |
 | Errores propagados | Timeouts, reintentos limitados y respuesta controlada |
 | Despliegue manual | Docker, staging, pipeline y rollback |
